@@ -91,7 +91,9 @@ func (h handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		fmt.Printf("Failed to connect to %s\n", h.Target)
 		return
 	}
-	clientHttpConn := httputil.NewClientConn(clientTcpConn, nil) // Start a new HTTP connection on it
+	cf := &tls.Config{}
+	ssl := tls.Client(clientTcpConn, cf)
+	clientHttpConn := httputil.NewClientConn(ssl, nil) // Start a new HTTP connection on it
 	defer clientHttpConn.Close()                                 // Close the connection to the server
 	if *productionHostRewrite {
 		productionRequest.Host = h.Target
