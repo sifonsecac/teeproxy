@@ -91,7 +91,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		fmt.Printf("Failed to connect to %s\n", h.Target)
 		return
 	}
-	cf := &tls.Config{}
+	cf := &tls.Config{InsecureSkipVerify: true}
 	ssl := tls.Client(clientTcpConn, cf)
 	clientHttpConn := httputil.NewClientConn(ssl, nil) // Start a new HTTP connection on it
 	defer clientHttpConn.Close()                                 // Close the connection to the server
