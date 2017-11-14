@@ -42,6 +42,18 @@ func (h handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var productionRequest, alternativeRequest *http.Request
 	if *percent == 100.0 || h.Randomizer.Float64()*100 < *percent {
 		alternativeRequest, productionRequest = DuplicateRequest(req)
+		alternativeRequest.Form.Add("RemoteAddr", req.RemoteAddr)
+		alternativeRequest.Form.Add("RequestURI", req.RequestURI)
+		// fmt.Printf("Method: %v\n", alternativeRequest.Method)
+		// fmt.Printf("URL: %v\n", alternativeRequest.URL)
+		// fmt.Printf("Proto: %v\n", alternativeRequest.Proto)
+		// fmt.Printf("Header: %v\n", alternativeRequest.Header)
+		// fmt.Printf("Content: %v\n", alternativeRequest.ContentLength)
+		// fmt.Printf("Close: %v\n", alternativeRequest.Close)
+		// fmt.Printf("Host: %v\n", alternativeRequest.Host)
+		// fmt.Printf("RemoteAddr: %v\n", alternativeRequest.RemoteAddr)
+		// fmt.Printf("RequestUri: %v\n", alternativeRequest.RequestURI)
+		// fmt.Printf("Body: %v\n", alternativeRequest.Body)
 		go func() {
 			defer func() {
 				if r := recover(); r != nil && *debug {
@@ -75,6 +87,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 				}
 				return
 			}
+
 		}()
 	} else {
 		productionRequest = req
@@ -176,6 +189,8 @@ func DuplicateRequest(request *http.Request) (request1 *http.Request, request2 *
 		Host:          request.Host,
 		ContentLength: request.ContentLength,
 		Close:         true,
+		RemoteAddr:    request.RemoteAddr,
+		RequestURI:	   request.RequestURI,
 	}
 	request2 = &http.Request{
 		Method:        request.Method,
@@ -188,6 +203,8 @@ func DuplicateRequest(request *http.Request) (request1 *http.Request, request2 *
 		Host:          request.Host,
 		ContentLength: request.ContentLength,
 		Close:         true,
+		RemoteAddr:    request.RemoteAddr,
+		RequestURI:	   request.RequestURI,
 	}
 	return
 }
