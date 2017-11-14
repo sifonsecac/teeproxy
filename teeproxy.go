@@ -178,6 +178,8 @@ func DuplicateRequest(request *http.Request) (request1 *http.Request, request2 *
 		Host:          request.Host,
 		ContentLength: request.ContentLength,
 		Close:         true,
+		RemoteAddr:    request.RemoteAddr,
+		RequestURI:    request.RequestURI,
 	}
 	request2 = &http.Request{
 		Method:        request.Method,
@@ -190,6 +192,8 @@ func DuplicateRequest(request *http.Request) (request1 *http.Request, request2 *
 		Host:          request.Host,
 		ContentLength: request.ContentLength,
 		Close:         true,
+		RemoteAddr:    request.RemoteAddr,
+		RequestURI:    request.RequestURI,
 	}
 	return
 }
